@@ -1,0 +1,6 @@
+--require ./app.js
+--reporter spec
+--timeout 25000
+--check-leaks
+--recursive
+--compilers 

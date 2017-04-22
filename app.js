@@ -11,7 +11,7 @@ var apiUtils = require('./lib/api-utils');
 var ApiError = require('./lib/api-error');
 
 var routes = require('./routes/index');
-var host =  process.env.CORS|| "http://localhost" +":"+ (process.env.port || "3001");
+var host =  process.env.CORS|| "http://localhost" +":"+ (process.env.port || "3000");
 
 var app = express();
 
@@ -33,8 +33,8 @@ app.use(session({
 }));
 
 
-// app.use(passport.initialize());
-// app.use(passport.session());
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(function(req, res, next) {
   res.header('Access-Control-Allow-Credentials', "true");

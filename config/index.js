@@ -6,6 +6,8 @@ var config = {};
 var arr = Object.keys(dbConfigs);
 config.db = dbConfigs[env.trim()];
 config.env = env;
+config.jwtSecret= 'KNDKNDKANDKANAKNADKNDKNAK',
+
 
 
 module.exports = config;

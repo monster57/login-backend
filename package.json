@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "set NODE_ENV=development && nodemon bin/www ",
+    "start": "export NODE_ENV=development && nodemon bin/www ",
     "test": "cross-env NODE_ENV=test node_modules/mocha/bin/mocha",
     "testServer": "set NODE_ENV=test && npm start"
   },
@@ -21,6 +21,7 @@
     "debug": "~2.2.0",
     "express": "^4.14.0",
     "express-session": "^1.14.1",
+    "jsonwebtoken": "^7.3.0",
     "lodash": "^4.15.0",
     "method-override": "^2.3.6",
     "mocha": "^3.2.0",
@@ -29,6 +30,7 @@
     "morgan": "^1.7.0",
     "node-ses": "^2.0.0",
     "passport": "^0.3.2",
+    "passport-facebook": "^2.1.1",
     "passport-local": "^1.0.0",
     "serve-favicon": "~2.3.0",
     "toastr": "^2.1.2"

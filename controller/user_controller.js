@@ -4,13 +4,13 @@ var User = models.User;
 
 
 UserController.signup = function(req, res) {
-    console.log(req.body , "this is body")
-    var requiredField = [ 'password', 'email', 'confirm_password'];
+    console.log(req.body, "this is body")
+    var requiredField = ['password', 'email', 'confirm_password'];
 
     requiredField.forEach(function(field) {
         if (Object.keys(req.body).indexOf(field) < 0) {
             message = 'Please provide ' + field.replace('_', ' ');
-            throw Error (message);
+            throw Error(message);
         }
     });
 
@@ -21,14 +21,14 @@ UserController.signup = function(req, res) {
     return User.findOne({ email: req.body.email })
         .then((existingUser) => {
             if (existingUser) {
-                throw Error ('User already exists...');
+                throw Error('User already exists...');
             }
 
             return User.create({
                 name: req.body.name,
                 email: req.body.email,
                 password: User.generateHash(req.body.password),
-                login_platform:'local'
+                login_platform: 'local'
             });
         })
         .then(function(user) {
@@ -51,20 +51,37 @@ UserController.login = function(req, res, next) {
             if (err) {
                 return next(err);
             }
-            return res.apiSuccess({ user: req.user }, "Successfully logged in");
+
+            return User.findOne({ _id: req.user._id }).then(function(user) {
+                let jsonUser = user.toJSON();
+                return User.generateJwt(user).then(function(token) {
+                    jsonUser.token = token
+                    return res.apiSuccess({ user: jsonUser })
+                })
+            })
+            // return res.apiSuccess({ user: req.user }, "Successfully logged in");
         });
     })(req, res, next);
 }
 
-UserController.facebookLogin = function(req, res){
-    return User.findOne({_id:req.user._id}).then(function(user){
+UserController.facebookLogin = function(req, res) {
+    return User.findOne({ _id: req.user._id }).then(function(user) {
         let jsonUser = user.toJSON();
-        return User.generateJwt(user).then(function(token){
+        return User.generateJwt(user).then(function(token) {
             jsonUser.token = token
-            return res.apiSuccess({ user: jsonUser })    
+            return res.apiSuccess({ user: jsonUser })
         })
-        
+
     })
 }
+
+UserController.userProfile = function(req, res) {
+    return User.findOne({_id:req.params.id}).then(function(user){
+        return res.apiSuccess({ user: user })
+    })
+}
+
+
+
 
 module.exports = UserController;

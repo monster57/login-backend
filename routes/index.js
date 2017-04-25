@@ -18,5 +18,7 @@ router.get('/auth/facebook/callback',
 
 
 router.get('/profile',UserController.facebookLogin)
-router.get('/login',UserController.login)
+router.post('/login',UserController.login)
+
+router.get('/user/profile/:id' , UserController.userProfile);
 module.exports = router;

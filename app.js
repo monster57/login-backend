@@ -9,13 +9,19 @@ var bodyParser = require('body-parser');
 var mongoose = require('./models/db');
 var apiUtils = require('./lib/api-utils');
 var ApiError = require('./lib/api-error');
-
+var expressJwt = require('express-jwt');
+var unless=require('express-unless');
 var routes = require('./routes/index');
 var host =  process.env.CORS|| "http://localhost" +":"+ (process.env.port || "3000");
 
 var app = express();
 
 var db = mongoose.connection;
+let jwtCheck = expressJwt({
+  secret: "asknkasnkanskn@KNKSnkasnka",
+  userProperty: 'payload'
+});
+jwtCheck.unless = unless;
 // view engine setup
 
 app.use(logger(':date[web] :method :url :status :response-time ms - :res[content-length]'))
@@ -35,10 +41,17 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(jwtCheck.unless({path:[/^\/user\/.*/]}))
 
 app.use(function(req, res, next) {
+  var allowedOrigins = ['https://www.facebook.com', host];
+  console.log(req.headers.origin , "this is headers");
+  var origin = req.headers.origin;
+  if(allowedOrigins.indexOf(origin) > -1){
+       res.setHeader('Access-Control-Allow-Origin', origin);
+  }
   res.header('Access-Control-Allow-Credentials', "true");
-  res.header("Access-Control-Allow-Origin", host);
+  // res.header("Access-Control-Allow-Origin", host);
   res.header("Access-Control-Allow-Headers", "X-Custom-Header, X-Requested-With, Content-Type, authorization, Accept");
   res.header("Access-Control-Allow-Methods", "Get,Post,PUT,Patch,Delete");
   next();
